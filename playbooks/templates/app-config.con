@@ -1,8 +1,0 @@
-# This configuration file will be used on Development and production
-# For development, the db server will be: development-mysql.dev.graymattertech.org
-# For production, the db server will be: production-mysql.graymattertech.org
-
-serverName: lospolloshermanos 
-userName: "Walter White"
-#userPassword: "Wh@tsmyN@m3?"
-databaseServer: XXXXXXX
