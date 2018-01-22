@@ -1,0 +1,10 @@
+---
+- hosts: PROD 
+  sudo: yes
+  tasks:
+  - copy:
+      src: "templates/app-config.con"
+      dest: "/etc/app-config.conf"
+      owner: vagrant 
+      mode: 0644
+      backup: yes

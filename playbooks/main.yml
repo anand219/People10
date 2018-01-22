@@ -1,0 +1,10 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+  - copy:
+      src: "templates/app-config.con"
+      dest: "/etc/app-config.conf"
+      owner: root:vagrant 
+      mode: 644
+      when: ansible_hostname == 'localhost'
