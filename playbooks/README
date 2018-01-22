@@ -1,0 +1,10 @@
+I have written two play books to deploy conf file under /etc/
+For Prod 
+ansible-playbook -i inventory prod.yml
+For Dev
+ansible-playbook -i inventory dev.yml
+
+In Inventory file i have declared each environment host
+i have copied my key files both environment 
+ssh-copy-id dev & ssh-copy-id prod
+from Templates folder i have placed conf file.
