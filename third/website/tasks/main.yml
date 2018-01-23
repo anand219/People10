@@ -1,0 +1,31 @@
+---
+- name: install apache and configuring
+  yum: name={{ item }} state=present
+  with_items:
+      - httpd
+      - httpd-devel
+- name: Creates directory
+  file: path=/var/www/html/{{ item }} state=directory
+  with_items:
+    - operations
+    - website
+  vars:
+    path: /var/www/html
+    path2: files/operations
+    path3: files/website
+  tasks:
+    - copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.src }}"
+        mode: "{{ item.mode }}"
+        mode: 0644
+      with_items:
+        - { src: 'files/index.html',dest: '{{ path }}/index.html', mode: '0777'}
+        - { src: '{{ path2 }}/landing.html' ,dest: '{{ path }}/operations', mode: '0707'}
+        - { src: '{{ path2 }}/takeoff.html',dest: '{{ path }}/website', mode: '0575'}
+        - { src: '{{ path3 }}/main.html',dest: '{{ path }}/website', mode: '0575'}
+        - { src: '{{ path2 }}/turnaround.html',dest: '{{ path }}/html/website', mode: '0575'}
+        - { src: '{{ path3 }}/cart.html',dest: '{{ path }}/website', mode: '0575'}
+        - { src: '{{ path3 }}/booking.html',dest: '{{ path }}/website', mode: '0575'}
+
+

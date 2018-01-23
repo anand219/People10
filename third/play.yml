@@ -1,0 +1,5 @@
+---
+- hosts: DEV 
+  sudo: yes
+  roles:
+   - website
