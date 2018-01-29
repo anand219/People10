@@ -1,0 +1,6 @@
+while creating rpm grtting dependencies error
+
+[vagrant@localhost SPECS]$ sudo rpmbuild -ba automation-1.0.spec
+error: Failed build dependencies:
+        automation is needed by automation-1.0-1-1.el6.x86_64
+[vagrant@localhost SPECS]$
