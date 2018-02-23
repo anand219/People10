@@ -1,0 +1,98 @@
+---
+- name: Rolling Restart for WSO2
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+   - name: fetching the wso2 stack details
+     shell: aws cloudformation describe-stacks --stack-name "{{ stack_name }}" --query "Stacks[*].Outputs[?OutputKey=='ActiveNodeNetworkInterfaceAddress'].OutputValue"
+     register: stackoutput_active
+     
+   - name: fetching the wso2 stack details
+     shell: aws cloudformation describe-stacks --stack-name "{{ stack_name }}" --query "Stacks[*].Outputs[?OutputKey=='PassiveNodeNetworkInterfaceAddress'].OutputValue"
+     register: stackoutput_passive
+
+   - name: Add Instance IP Address to temporary inventory groups
+     add_host:
+       groups: wso2activehost
+       hostname: "{{item}}"
+     with_items: stackoutput_active.stdout_lines
+     
+   - name: Add Instance IP Address to temporary inventory groups
+     add_host:
+       groups: wso2passivehost
+       hostname: "{{item}}"
+     with_items: stackoutput_passive.stdout_lines
+
+- hosts: wso2activehost
+  serial: 1
+  any_errors_fatal: true
+  gather_facts: true
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  vars:
+    ansible_connection: "{{ connection_type }}"
+    ansible_ssh_user: "{{ ssh_user_name }}"
+    ansible_ssh_private_key_file: "{{ ssh_private_key_file }}"
+
+  tasks:
+
+   - name: stopping wso2process
+     shell: |
+       /etc/init.d/wso2 stop
+   - name: Pause Playbook for stop the process
+     pause:
+       seconds: 10
+
+   - name: starting the wso2 process
+     shell: |
+       /etc/init.d/wso2 start
+
+   - name: Pause Playbook for stop the process
+     pause:
+       seconds: 10
+
+   - name: Checking for the wso2 process
+     shell: ps ax | grep wso2 | grep -v grep
+     register: wso2process
+
+   - debug: msg="{{ wso2process.stdout }}"
+   
+- hosts: wso2passivehost
+  serial: 1
+  any_errors_fatal: true
+  gather_facts: true
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  vars:
+    ansible_connection: "{{ connection_type }}"
+    ansible_ssh_user: "{{ ssh_user_name }}"
+    ansible_ssh_private_key_file: "{{ ssh_private_key_file }}"
+
+  tasks:
+
+   - name: stopping wso2process
+     shell: |
+       /etc/init.d/wso2 stop
+   - name: Pause Playbook for stop the process
+     pause:
+       seconds: 10
+
+   - name: starting the wso2 process
+     shell: |
+       /etc/init.d/wso2 start
+
+   - name: Pause Playbook for stop the process
+     pause:
+       seconds: 10
+
+   - name: Checking for the wso2 process
+     shell: ps ax | grep wso2 | grep -v grep
+     register: wso2process
+
+   - debug: msg="{{ wso2process.stdout }}"
